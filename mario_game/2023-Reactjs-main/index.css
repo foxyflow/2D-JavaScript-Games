@@ -1,0 +1,14 @@
+
+
+html, body {
+    margin: 0;
+    padding: 10;
+}
+
+.intro{
+    float: right;
+    padding: 2%;
+    width: 38%;
+    height: 50%;
+    background-color: rgb(7, 34, 87);
+}
