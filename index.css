@@ -3,9 +3,12 @@
 html, body {
     margin: 0;
     padding: 10;
+    background-color: black;
+    
 }
 
 .intro{
+    color:blanchedalmond;
     float: right;
     padding: 2%;
     width: 38%;
