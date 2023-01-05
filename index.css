@@ -3,11 +3,20 @@
 html, body {
     margin: 0;
     padding: 10;
-    background-color: black;
+    background-color: rgb(41, 39, 39);
     
 }
 
 .intro{
+    color:blanchedalmond;
+    float: right;
+    padding: 2%;
+    width: 38%;
+    height: 50%;
+    background-color: rgb(7, 34, 87);
+}
+
+.below-intro{
     color:blanchedalmond;
     float: right;
     padding: 2%;

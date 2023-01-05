@@ -25,6 +25,9 @@ kaboom({
   loadSprite("cloud", "cloud.png");
   loadSprite("castle", "castle.png");
 
+         //squash 
+  let canSquash = false;
+
   const LEVELS = [
     [
       "                                                                                                ",
@@ -35,7 +38,7 @@ kaboom({
       "                                                                                                ",
       "                                                                                                ",
       "      -?-b-                                                                                     ",
-      "                                                    ?        ?                                  ",
+      "                                                     ?        ?                                 ",
       "                                                                                                ",
       "                                      _                 ?                                       ",
       "                                 _    |                                                         ",
@@ -110,7 +113,7 @@ kaboom({
       sprite("emptyBox"),
       area(),
       solid(),
-     // bump(),
+      bump(),
       origin("bot"),
       'emptyBox'
     ],
@@ -118,7 +121,7 @@ kaboom({
       sprite("coin"),
       area(),
       solid(),
-      //bump(64, 8),
+      bump(64, 8),
       cleanup(),
       lifespan(0.4, { fade: 0.01 }),
       origin("bot"),
@@ -154,7 +157,7 @@ kaboom({
       solid(),
       body(), 
       patrol(50),
-      //enemy(),
+      enemy(),
       origin("bot"),
       "badGuy"
     ],
@@ -162,8 +165,8 @@ kaboom({
       sprite("mario", { frame: 0 }),
       area({ width: 16, height: 16 }),
       body(),
-      //mario(),
-      //bump(150, 20, false),
+      mario(),
+      bump(150, 20, false),
       origin("bot"),
       "player"
     ]
@@ -226,21 +229,24 @@ kaboom({
 
     //Mario movement
     const SPEED = 120; //could move to top
-    onKeyDown('d', () => {
+    onKeyDown("d", () => {
+      if (player.isFrozen) return;
       player.flipX(false);
       player.move(SPEED, 0);
     });
 
-    onKeyDown('a', () => {
+    onKeyDown("a", () => {
+      if (player.isFrozen) return;
       player.flipX(true);
-      if (toScreen(player.pos).x > 10) {
+      if (toScreen(player.pos).x > 20) {
         player.move(-SPEED, 0);
       }
     });
 
     onKeyPress('w', () => {
-      if (player.grounded()) {
+      if (player.isAlive && player.grounded()) {
         player.jump();
+        canSquash = true;
       }
     });
 
@@ -248,36 +254,241 @@ kaboom({
     // for side scrolling right only:
     player.onUpdate(() => {
       // center camera to player
-      let currCam = camPos();
+      var currCam = camPos();
       if (currCam.x < player.pos.x) {
         camPos(player.pos.x, currCam.y);
       }
+    
+      if (player.isAlive && player.grounded()) {
+        canSquash = false;
+      }
+    
+      // Check if Mario has fallen off the screen
+      if (player.pos.y > height() - 16){
+        killed();
+      }
+    
     });
 
-  });
-
-      //custom patrol component:
-      function patrol(distance = 100, speed = 50, dir = 1){
-        return{
-          id: "patrol",
-          require: ["pos", "area"],
-          startingPos: vec2(0,0),
-          add(){
-            this.startingPos = this.pos;
-            this.on("collide", (obj, side) =>{
-              if(side === "left" || side === "right"){
-                dir = -dir;
-              }
-            });
-          },
-          update(){
-            if(Math.abs(this.pos.x - this.startingPos.x) >= distance){
-              dir = -dir;
-            }
-            this.move(speed * dir, 0);
-          }
+    player.onCollide("badGuy", (baddy) => {
+      if (baddy.isAlive == false) return;
+      if (player.isAlive == false) return;
+      if (canSquash) {
+        // Mario has jumped on the bad guy:
+        baddy.squash();
+      } else {
+        // Mario has been hurt
+        if (player.isBig) {
+          player.smaller();
+        } else {
+          // Mario is dead :(
+          killed();
         }
       }
+    });
+
+    player.onCollide("bigMushy", (mushy) => {
+      destroy(mushy);
+      player.bigger();
+    })
+
+        player.onCollide("castle", (castle, side) => {
+      player.freeze();
+      add([
+        text("Well Done!", { size: 24 }),
+        pos(toWorld(vec2(160, 120))),
+        color(255, 255, 255),
+        origin("center"),
+        layer('ui'),
+      ]);
+      wait(1, () => {
+        let nextLevel = levelNumber + 1;
+    
+        if (nextLevel >= LEVELS.length) {
+          go("start");
+        } else {
+          go("game", nextLevel);
+        }
+      })
+    });
+
+    player.on("headbutt", (obj) => {
+      if (obj.is("questionBox")) {
+        if (obj.is("coinBox")) {
+          let coin = level.spawn("c", obj.gridPos.sub(0, 1));
+          coin.bump();
+        } else
+        if (obj.is("mushyBox")) {
+          level.spawn("M", obj.gridPos.sub(0, 1));
+        }
+        var pos = obj.gridPos;
+        destroy(obj);
+        var box = level.spawn("!", pos);
+        box.bump();
+      }
+    });
+
+    function killed() {
+      // Mario is dead :(
+      if (player.isAlive == false) return; // Don't run it if mario is already dead
+      player.die();
+      add([
+        text("Game Over :(", { size: 24 }),
+        pos(toWorld(vec2(160, 120))),
+        color(255, 255, 255),
+        origin("center"),
+        layer('ui'),
+      ]);
+      wait(2, () => {
+        go("start");
+      })
+    }
+
+
+  
+  }); //end of game scene
+
+  function enemy() {
+    return {
+      id: "enemy",
+      require: ["pos", "area", "sprite", "patrol"],
+      isAlive: true,
+      update() {
+  
+      },
+      squash() {
+        this.isAlive = false;
+        this.unuse("patrol");
+        this.stop();
+        this.frame = 2;
+        this.area.width = 16;
+        this.area.height = 8;
+        this.use(lifespan(0.5, { fade: 0.1 }));
+      }
+    }
+  }
+ 
+
+    //custom patrol component:
+    function patrol(distance = 100, speed = 50, dir = 1){
+      return{
+        id: "patrol",
+        require: ["pos", "area"],
+        startingPos: vec2(0,0),
+        add(){
+          this.startingPos = this.pos;
+          this.on("collide", (obj, side) =>{
+            if(side === "left" || side === "right"){
+              dir = -dir;
+            }
+          });
+        },
+        update(){
+          if(Math.abs(this.pos.x - this.startingPos.x) >= distance){
+            dir = -dir;
+          }
+          this.move(speed * dir, 0);
+        }
+      }
+    }
+
+    //bump
+    function bump(offset = 8, speed = 2, stopAtOrigin = true){
+      return {
+        id: "bump",
+        require: ["pos"],
+        bumpOffset: offset,
+        speed: speed,
+        bumped: false,
+        origPos: 0,
+        direction: -1,
+        update(){
+          if(this.bumped){
+            this.pos.y = this.pos.y + this.direction * this.speed;
+           if(this.pos.y < this.origPos - this.bumpOffset){
+             this.direction = 1;
+           }
+           if (stopAtOrigin && this.pos.y >= this.origPos){
+            this.bumped = false;
+            this.pos.y = this.origPos;
+            this.direction = -1;
+           }
+          }
+        },
+        bump(){
+          this.bumped = true;
+          this.origPos = this.pos.y;
+        }
+      };
+    }
+
+//Mario's components
+function mario() {
+  return {
+    id: "mario",
+    require: ["body", "area", "sprite", "bump"],
+    smallAnimation: "Running",
+    bigAnimation: "RunningBig",
+    smallStopFrame: 0,
+    bigStopFrame: 8,
+    smallJumpFrame: 5,
+    bigJumpFrame: 13,
+    isBig: false,
+    isFrozen: false,
+    isAlive: true,
+    update() {
+      if (this.isFrozen) {
+        this.standing();
+        return;
+      }
+
+      if (!this.grounded()) {
+        this.jumping();
+      }
+      else {
+        if (keyIsDown("a") || keyIsDown("d")) {
+          this.running();
+        } else {
+          this.standing();
+        }
+      }
+    },
+    bigger() {
+      this.isBig = true;
+      this.area.width = 24;
+      this.area.height = 32;
+    },
+    smaller() {
+      this.isBig = false;
+      this.area.width = 16;
+      this.area.height = 16;
+    },
+    standing() {
+      this.stop();
+      this.frame = this.isBig ? this.bigStopFrame : this.smallStopFrame;
+    },
+    jumping() {
+      this.stop();
+      this.frame = this.isBig ? this.bigJumpFrame : this.smallJumpFrame;
+    },
+    running() {
+      const animation = this.isBig ? this.bigAnimation : this.smallAnimation;
+      if (this.curAnim() !== animation) {
+        this.play(animation);
+      }
+    },
+    freeze() {
+      this.isFrozen = true;
+    },
+    die() {
+      this.unuse("body");
+      this.bump();
+      this.isAlive = false;
+      this.freeze();
+      this.use(lifespan(1, { fade: 1 }));
+    }
+  }
+}
 
 
 /* Notes
