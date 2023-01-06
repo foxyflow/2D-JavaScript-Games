@@ -8,7 +8,7 @@ kaboom({
     height: 240,
     scale: 1.8,
   });
-
+  loadSound("wed_music", "sounds/wed_soundtrack.mp3");
   loadRoot("sprites/");
   loadAseprite("mario", "Mario.png", "Mario.json");
   loadAseprite("enemies", "enemies.png", "enemies.json");
@@ -25,7 +25,8 @@ kaboom({
   loadSprite("cloud", "cloud.png");
   loadSprite("castle", "castle.png");
 
-         //squash 
+
+         //global vars 
   let canSquash = false;
 
   const LEVELS = [
@@ -64,6 +65,58 @@ kaboom({
       "       |                                            |          E    E            H           ",
       "================     ========================================================================",
       "================     ========================================================================",
+    ],
+    [
+      "        H                                                                                      ",
+      "        _                                            _                                        ",
+      "                                                                                             ",
+      "               -                                                                              ",
+      "               -                                                                              ",
+      "               -                                                                              ",
+     "                -                                                                              ",
+      "               -                                                                              ",
+      "==    ===     ===="                                                                             ,
+      "            -                                                                                 ",
+      "          -                                                                                   ",
+    "          -                                                                                   ",
+  "          -                                                                                  ",
+      "          -                                                                                  ",
+      "          -                                                                                  ",
+       "----------- ----------------                                                   ",
+    ],
+    [
+      "                                                 ?                                            ",
+      "                                                      ?                                       ",
+      "                                      ----------                                              ",
+      "                           ------                ---                                           ",
+      "                                                     --                                        ",
+      "                     ----                                      H ----                          ",
+      "      b     --                                                 -                                ",
+      "      E         ----                                                                           ",
+      "     ---                                                                                       ",
+      "                     ------                                                                  ",
+      "                                                         ---                                    ",
+      "                                                        -----                                 ",
+      "                             --------                   -----                                  ",
+      "           =====     =======                    E  E      -----                                 ",
+      "================   E =========================================================================",
+      "===============================================================================================",
+    ],
+    [
+      "                                                                                             ",
+      "                                                                                             ",
+      "                                                                                             ",
+      "                                                                                             ",
+      "                                          E                                                   ",
+      "                                   E      ====   E                                                 ",
+      "                                   ===        =====                                                  ",
+      "                              --                                                               ",
+      "                     ---        EEEEEE                 EEE                                               ",
+      "                --                                                                             ",
+      "              E E ! E  !E ! !! !E ! !E !  E   b EEE   b   EEE   b    E    ?    E   ?  E            ",
+      "             --                                             ?      ?                             ",
+      "     EEE  - ---   EEEEEEEE               EEEEEEE                  ?  M M      H     ",
+      "==============================================================================================",
     ]
   ];
 
@@ -182,24 +235,37 @@ kaboom({
   
     onKeyRelease("enter", () => {
       go("game");
+      
     })
   });
   go("start");
 
 
-  scene("game", (levelNumber = 0) => {
+  //between scenes
+
+ 
+    const music = play("wed_music", {
+      loop: false,
+      volume: 0.4
+    });
+
+
+  scene("game", (levelNumber = 4) => {
+
     layers([
       "bg",
       "game",
       "ui",
     ], "game");
-  
+
     const level = addLevel(LEVELS[levelNumber], levelConf);
   
     add([
       sprite("cloud"),
       pos(20, 50),
-      layer("bg")
+      layer("bg"),
+      origin("bot")
+
     ]);
   
     add([
@@ -225,7 +291,8 @@ kaboom({
       lifespan(1, { fade: 0.5 })
     ]);
   
-    const player = level.spawn("p", 1, 10)
+    const player = level.spawn("p", 2,2);
+    
 
     //Mario movement
     const SPEED = 120; //could move to top
@@ -337,7 +404,8 @@ kaboom({
         pos(toWorld(vec2(160, 120))),
         color(255, 255, 255),
         origin("center"),
-        layer('ui'),
+        layer('ui')
+        
       ]);
       wait(2, () => {
         go("start");
