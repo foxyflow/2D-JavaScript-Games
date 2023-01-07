@@ -8,7 +8,7 @@ kaboom({
     height: 240,
     scale: 1.8,
   });
-  //loadSound("wed_music", "sounds/wed_soundtrack.mp3");
+  loadSound("wed_music", "sounds/wed_soundtrack.mp3");
   loadRoot("sprites/");
   loadAseprite("mario", "Mario.png", "Mario.json");
   loadAseprite("enemies", "enemies.png", "enemies.json");
@@ -261,10 +261,10 @@ kaboom({
   //between scenes
 
   //music
-    // const music = play("wed_music", {
-    //   loop: false,
-    //   volume: 0.4
-    // });
+    const music = play("wed_music", {
+      loop: false,
+      volume: 0.4
+    });
 
 
   scene("game", (levelNumber = 5) => {
