@@ -1,5 +1,5 @@
-// import React from 'react'
-// import ReactDOM from 'react-dom'
+<div id="like_button_container"></div>
+
 
 function Page(){ 
     return ( 

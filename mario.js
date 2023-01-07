@@ -8,7 +8,7 @@ kaboom({
     height: 240,
     scale: 1.8,
   });
-  loadSound("wed_music", "sounds/wed_soundtrack.mp3");
+  //loadSound("wed_music", "sounds/wed_soundtrack.mp3");
   loadRoot("sprites/");
   loadAseprite("mario", "Mario.png", "Mario.json");
   loadAseprite("enemies", "enemies.png", "enemies.json");
@@ -117,6 +117,23 @@ kaboom({
       "             --                                             ?      ?                             ",
       "     EEE  - ---   EEEEEEEE               EEEEEEE                  ?  M M      H     ",
       "==============================================================================================",
+    ],
+    [
+      "                                                                                             ",
+      "---  -------------------------------------------------------------    |                      ",
+      "                                                                      |                       ",
+      "                                                                      | b                      ",
+      "     ----                                                             |                         ",
+      "                                                                      |                       ",
+      "           -                                                          |     _ _                 ",
+      "           -                     E           E      E         E  E    |     | |                ",
+      "           -        --------------------------------------------------|---  | |                 ",
+      "           --    -    -            b           ????????               _     | |                  ",
+      "           -   -   -                                                        | |                 ",
+      "           -   -   -                                                        | |                  ",
+      "           -   -   -                                                        | |                   ",
+      "             E  E                 E     E                                   |H|                   ",
+      "============================================================================================",
     ]
   ];
 
@@ -243,14 +260,14 @@ kaboom({
 
   //between scenes
 
- 
-    const music = play("wed_music", {
-      loop: false,
-      volume: 0.4
-    });
+  //music
+    // const music = play("wed_music", {
+    //   loop: false,
+    //   volume: 0.4
+    // });
 
 
-  scene("game", (levelNumber = 0) => {
+  scene("game", (levelNumber = 5) => {
 
     layers([
       "bg",
