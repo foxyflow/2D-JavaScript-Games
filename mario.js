@@ -113,7 +113,7 @@ kaboom({
       "                              --                                                               ",
       "                     ---        EEEEEE                 EEE                                               ",
       "                --                                                                             ",
-      "              E E ! E  !E ! !! !E ! !E !  E   b EEE   b   EEE   b    E    ?    E   ?  E            ",
+      "              E E ! E  !E ! !! !E ! !E !  E   b EEE   b   EEE   b    E    ?    E  ?              ",
       "             --                                             ?      ?                             ",
       "     EEE  - ---   EEEEEEEE               EEEEEEE                  ?  M M      H     ",
       "==============================================================================================",
@@ -250,7 +250,7 @@ kaboom({
     });
 
 
-  scene("game", (levelNumber = 4) => {
+  scene("game", (levelNumber = 0) => {
 
     layers([
       "bg",
