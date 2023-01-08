@@ -1,0 +1,43 @@
+body{
+    background-color: black;
+}
+
+a {
+    display: block;
+    width: 300px;
+    padding: 31px 5px;
+    border-radius: 5px;
+    margin: 20% auto;
+    background-color: orange;
+        transition-property: background-color;
+        transition-duration: 750ms;
+    text-align: center;
+    font-family: Helvetica;
+    font-size: 32px;
+    color: mintcream;
+    float: right;
+  }
+  
+  a:hover {
+    background-color: limegreen;
+  }
+
+  .instructions{
+    display: flex;
+    width: auto;
+    height: auto;
+    padding: 3px 3px;
+    border-radius: 2px;
+    margin: 3% auto;
+    text-align: center;
+    font-family: Helvetica;
+    font-size: 16px;
+    color: mintcream;
+    background-color: peru;
+  }
+  .mario{
+    display: flex;
+    width: auto;
+    height: auto;
+    align-content: center;
+  }
