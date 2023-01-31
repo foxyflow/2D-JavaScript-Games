@@ -8,7 +8,7 @@ kaboom({
     height: 240,
     scale: 1.8,
   });
-  loadSound("wed_music", "sounds/wed_soundtrack.mp3");
+  loadSound("wed_music", "sounds/wed.mp3");
   loadRoot("sprites/");
   loadAseprite("mario", "Mario.png", "Mario.json");
   loadAseprite("enemies", "enemies.png", "enemies.json");
@@ -90,7 +90,7 @@ kaboom({
       "               -                                                                              ",
       "               -                                                                              ",
       "               -                                                                              ",
-     "                -                                                                              ",
+    "                -                                                                              ",
       "               -                                                                              ",
       "==    ===     ===="                                                                             ,
       "            -                                                                                 ",
@@ -99,7 +99,7 @@ kaboom({
   "          -                                                                                  ",
       "          -                                                                                  ",
       "          -                                                                                  ",
-       "----------- ----------------                                                   ",
+      "----------- ----------------                                                   ",
     ],
     [
       "                                                 ?                                            ",
@@ -453,7 +453,7 @@ kaboom({
       }
     }
   }
- 
+
 
     //custom patrol component:
     function patrol(distance = 100, speed = 50, dir = 1){
@@ -491,14 +491,14 @@ kaboom({
         update(){
           if(this.bumped){
             this.pos.y = this.pos.y + this.direction * this.speed;
-           if(this.pos.y < this.origPos - this.bumpOffset){
-             this.direction = 1;
-           }
-           if (stopAtOrigin && this.pos.y >= this.origPos){
-            this.bumped = false;
-            this.pos.y = this.origPos;
-            this.direction = -1;
-           }
+            if(this.pos.y < this.origPos - this.bumpOffset){
+              this.direction = 1;
+            }
+            if (stopAtOrigin && this.pos.y >= this.origPos){
+              this.bumped = false;
+              this.pos.y = this.origPos;
+              this.direction = -1;
+            }
           }
         },
         bump(){
@@ -577,10 +577,10 @@ function mario() {
 }
 
 
-/* Notes
-  //creating a custom component in Kaboom:
+/* Notes: creating a custom component in Kaboom: must return id, require, call add() and update() -- Template:
+  
   function customComponent(args){
-    //must return id, require, call add() and update()
+    
     return{
       id: "name",
       require: ["component1", "component2"],
@@ -593,7 +593,7 @@ function mario() {
     };
   }
   */
- 
+
 
 
 
